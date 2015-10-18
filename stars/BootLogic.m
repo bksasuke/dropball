@@ -22,7 +22,7 @@
                                                                         ]};
     NSDictionary* Immediate = @{SECTION: @"Timer Animation", MENU: @[
                                     @{TITLE: @"Rolling Ball", CLASS: @"RollingBall"},
-                                    @{TITLE: @"Drop Ball", CLASS: @"DropBall"} ]};
+                                    @{TITLE: @"NonStop Ball", CLASS: @"DropBall"} ]};
     
     mainScreen.menu = @[basic,Immediate];
     mainScreen.title = @"UIView Advanced";

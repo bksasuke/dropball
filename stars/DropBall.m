@@ -16,8 +16,7 @@
 {
     UIImageView *ball;
     NSTimer *timer;
-    CGFloat ballRadius;
-    CGFloat x,y, velocityY, accellerateY, maxHeight;
+    CGFloat x, y, velocityX, velocityY, maxHeight, maxWidth, ballRadius;
 }
 
 - (void)viewDidLoad {
@@ -25,7 +24,11 @@
     self.view.backgroundColor =[UIColor whiteColor];
     self.edgesForExtendedLayout = UIRectEdgeNone;
     [self addBall];
-    timer = [NSTimer scheduledTimerWithTimeInterval:0.016
+    
+    NSURL *SoundURL = [ NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"switch" ofType:@"mp3"]];
+    AudioServicesCreateSystemSoundID ((__bridge CFURLRef)SoundURL, &playsound);
+
+    timer = [NSTimer scheduledTimerWithTimeInterval:0.0167
                                              target:self
                                            selector:@selector(dropBall)
                                            userInfo:nil
@@ -34,24 +37,38 @@
 }
 -(void) addBall {
     CGSize mainViewSize = self.view.bounds.size;
-    ball = [[UIImageView alloc] initWithImage: [UIImage imageNamed:@"ball"]];
-    ballRadius = 32;
-    x = mainViewSize.width *0.5;
+    ball = [[UIImageView alloc] initWithImage: [UIImage imageNamed:@"ball12"]];
+    ballRadius = 16;
+    x = ballRadius;
     y = ballRadius;
-    velocityY = 0.0;
-    accellerateY = .25;
+   velocityX=velocityY= .5;
+    
     CGFloat statusNavigationBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height +self.navigationController.navigationBar.bounds.size.height;
     maxHeight = mainViewSize.height - ballRadius - statusNavigationBarHeight;
+    maxWidth  = mainViewSize.width - ballRadius;
     ball.center = CGPointMake(x, y);
     [self.view addSubview:ball];
 }
 -(void) dropBall {
     
-    velocityY += accellerateY;
-    y += velocityY;
-    if (y>maxHeight) {
-        velocityY = -velocityY*.98; //damper
-        y=maxHeight;
+    x += ballRadius*velocityX;
+    y += ballRadius*velocityY;
+    if ( x>=maxWidth-ballRadius && y>=ballRadius) {
+        velocityX=velocityX*-1;
+        AudioServicesPlaySystemSound(playsound);
+    }
+    
+    if ( x>=ballRadius && y>maxHeight-ballRadius) {
+        velocityY=velocityY*-1;
+        AudioServicesPlaySystemSound(playsound);
+    }
+    if (x<=ballRadius) {
+        velocityX =velocityX*-1;
+        AudioServicesPlaySystemSound(playsound);
+    }
+    if (y<=ballRadius) {
+        velocityY =velocityY*-1;
+        AudioServicesPlaySystemSound(playsound);
     }
     ball.center= CGPointMake(x, y);
 }
